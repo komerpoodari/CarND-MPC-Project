@@ -7,9 +7,11 @@ using namespace std;
 using CppAD::AD;
 
 // TODO: Set the timestep length and duration
+//size_t N =16; 6; 13
+//double dt = 0.09; 0.2; 0.07
+
 size_t N =10;
 double dt = 0.1;
-
 // This value assumes the model presented in the classroom is used.
 //
 // It was obtained by measuring the radius formed by running the vehicle in the

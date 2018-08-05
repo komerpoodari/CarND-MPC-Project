@@ -1,6 +1,121 @@
 # CarND-Controls-MPC
 Self-Driving Car Engineer Nanodegree Program
 
+**This file is updated based on the assignment submission.**
+[//]: # (Image References)
+[image1]: ./setup.png
+[image2]: ./control.png
+
+# The Model
+The model predictive control (MPC) implementation in this assignment is based on the 
+lecture notes and the MPC quizzes solution. The model is a simple kinematic controller
+that takes the intended path computed using a 3rd degree polynomial fitting (reference
+waypoints), state variables *{current x coordinate (x), current y coordinate(y), 
+vehicle orientation (psi), velocity (v), cross-talk error(cte), orientation error (epsi)}* 
+and actuator constraints *{steering_angle, thtrottle}* and computes the actuator values for 
+next specified *N* number of future intervals, while optimizing the error between intented 
+waypoints and model predicted points.
+
+The majority of the work involved in fine-tuning
+- the resulting horizon (*T*)
+- time interval between each prediction (*dt*)
+- number of prediction steps (*N = T/dt*) 
+
+AND
+
+the error parameters for the optimizer consideration.
+
+The model also considers the latency between computation and the actuator effect on the vehicle.
+
+Here is the overview of steps.
+
+## 1. Define Model Hyperparameters.
+- Select the horizon (*T*), which is the number of seconds into future of the moving vehicle.
+- Select the interval (*dt*), smaller the better, however the computer should have enough power.
+- Derive the number of steps (*N = T/dt*)   
+
+I experimented with a range of combinations from [N=6; dt=0.2] to [N=16; dt=0.09]
+settled on the following.
+
+ | T (sec)| dt(sec) | N  |
+ |:------:|:-------:|:--:|
+ |    1   |   0.1   | 10 | 
+ 
+The following are video links for some combinations.
+ | T (sec)| dt(sec) | N  | Video Link                    |Comment                     |
+ |:------:|:-------:|:--:|:-----------------------------:|:--------------------------:|
+ |    1   |   0.1   | 10 | https://youtu.be/pZ_lenzEivo  | Stable                     |
+ |   1.2  |   0.2   |  6 | https://youtu.be/kXn03VMzEIo  | Unstable; too large error. |
+ |   1.44 |   0.09  | 16 | https://youtu.be/8H_8zPxhLhc  | Unstable; very slow.       |  
+ 
+ The relevant code is in `MPP.cpp`.
+ 
+ 
+ ## 2. Setup Model equations.
+ This involves pedicting next state. There are some finer details of converting global coordinates
+ to vehicle oriented coordinates and taking care latency of actuator effet.
+ The relevant code is implemented in `main.cpp()` around lines [#97 - #131].
+ 
+## 3. Define Cost function.
+This is very experimental in nature. I used the following error term penalty values.
+ |Num| Penalty Parameter |Vaulue |comment                                             |
+ |:-:|:-----------------:|:-----:|:--------------------------------------------------:|
+ |1  |  cte_mul          |4000.0 | interdependent with other parameters & speed ref_v.|
+ |2  |  epsi_mul         |2000.0 | intererdepent with other parameters and ref_v.     |
+ |3  |  delta_mul        |10.0   | intererdepent with other parameters and ref_v.     |
+ |4  |  v_d_mul          |1.0    | intererdepent with other parameters and ref_v.     |
+ |5  |  delta_d_mul      |100.0  | intererdepent with other parameters and ref_v.     |
+ |6  |  delta_d_mul      |10.0   | intererdepent with other parameters and ref_v.     |
+
+I took help from previous implementations as guideline.
+However, it looks like each implementation varied drastically in terms cost penalty multiplier
+values.  The relevant code is in `MPP.cpp: operator()`.
+
+
+ I selected the following reference values.
+ |Num| Ref. Parameter    |Vaulue |comment                                         |
+ |:-:|:-----------------:|:-----:|:----------------------------------------------:|
+ |1  |  ref_v            |90.0   | MPH. At higher speeds, more fine-tuning needed.|
+ |2  |  ref_cte          |0.0    | logical value.                                 |
+ |3  |  ref_epsi         |0.0    | logical value.                                 |
+ 
+ The relevant definitions are in `MPP.cpp`.
+ 
+ 
+## 3. Define Actuator Constraints.
+As suggested in lectures and project notes, I used the following values.
+
+ |Num| Constraint        |Lower Bound|Upper Bound| Comment                           |
+ |:-:|:-----------------:|:---------:|:---------:|----------------------------------:|
+ |1  |  Steering Value   |-0.436332  | 0.436332  |Units are radians [-25 - +25 deg.] |
+ |2  |  Throttle         |-1.0       | 1.0       |                                   |
+
+The following lecture snapshot provides a good pictorial description of setup.
+![alt text][image1]
+
+## 4. Control Loop
+First the pre-processed current state with required translation from global to vehicle 
+coordinates and taking care of actuator latency, and polynomial coefficients are passed 
+to solver, `mpc.Solve()`. The solver computes optimal steering_angle and throttle values
+by using optimizer `Ipopt`, to minimize the cost function, while satsifying the actuator
+constraints. The loops repeates until the similator exits.
+The following lecture snapshot provides a good pictorial description of control loop.
+![alt text][image2]
+
+## 5. Reflection.
+This exercise provided an appreciation for the complexity involved for a simple model,
+which does not even consider the dynamic forces, such as tire slip, air friction etc.
+There are two many levers to play with. In one prominent way this exercise does NOT
+address the end of the path plan, though the lecture covered briefly regarding reaching
+the destination.
+
+## 6. Results
+I chose 90.0 mph as reference speed. At at 70 mph reference speed the vehicle was even more stable.
+Here is the link to the video.  
+https://youtu.be/pZ_lenzEivo
+
+
+
 ---
 
 ## Dependencies

@@ -42,6 +42,7 @@ settled on the following.
  |    1   |   0.1   | 10 | 
  
 The following are video links for some combinations.
+
  | T (sec)| dt(sec) | N  | Video Link                    |Comment                     |
  |:------:|:-------:|:--:|:-----------------------------:|:--------------------------:|
  |    1   |   0.1   | 10 | https://youtu.be/pZ_lenzEivo  | Stable                     |
@@ -58,6 +59,7 @@ The following are video links for some combinations.
  
 ## 3. Define Cost function.
 This is very experimental in nature. I used the following error term penalty values.
+
  |Num| Penalty Parameter |Vaulue |comment                                             |
  |:-:|:-----------------:|:-----:|:--------------------------------------------------:|
  |1  |  cte_mul          |4000.0 | interdependent with other parameters & speed ref_v.|
@@ -70,9 +72,8 @@ This is very experimental in nature. I used the following error term penalty val
 I took help from previous implementations as guideline.
 However, it looks like each implementation varied drastically in terms cost penalty multiplier
 values.  The relevant code is in `MPP.cpp: operator()`.
-
-
- I selected the following reference values.
+I selected the following reference values.
+ 
  |Num| Ref. Parameter    |Vaulue |comment                                         |
  |:-:|:-----------------:|:-----:|:----------------------------------------------:|
  |1  |  ref_v            |90.0   | MPH. At higher speeds, more fine-tuning needed.|

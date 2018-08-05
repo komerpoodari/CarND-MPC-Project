@@ -2,6 +2,7 @@
 Self-Driving Car Engineer Nanodegree Program
 
 **This file is updated based on the assignment submission.**
+
 [//]: # (Image References)
 [image1]: ./setup.png
 [image2]: ./control.png

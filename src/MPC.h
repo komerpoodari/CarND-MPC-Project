@@ -6,11 +6,15 @@
 
 using namespace std;
 
+#define LF 2.67
+#define DT 0.1
+
 class MPC {
  public:
+
   MPC();
 
-  virtual ~MPC();
+  virtual ~MPC(); 
 
   // Solve the model given an initial state and polynomial coefficients.
   // Return the first actuatotions.

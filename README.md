@@ -64,11 +64,11 @@ This is very experimental in nature. I used the following error term penalty val
  |Num| Penalty Parameter |Vaulue |comment                                             |
  |:-:|:-----------------:|:-----:|:--------------------------------------------------:|
  |1  |  cte_mul          |4000.0 | interdependent with other parameters & speed ref_v.|
- |2  |  epsi_mul         |2000.0 | intererdepent with other parameters and ref_v.     |
- |3  |  delta_mul        |10.0   | intererdepent with other parameters and ref_v.     |
- |4  |  v_d_mul          |1.0    | intererdepent with other parameters and ref_v.     |
- |5  |  delta_d_mul      |100.0  | intererdepent with other parameters and ref_v.     |
- |6  |  delta_d_mul      |10.0   | intererdepent with other parameters and ref_v.     |
+ |2  |  epsi_mul         |2000.0 | interdependent  with other parameters and ref_v.   |
+ |3  |  delta_mul        |10.0   | interdependent  with other parameters and ref_v.   |
+ |4  |  v_d_mul          |1.0    | interdependent  with other parameters and ref_v.   |
+ |5  |  delta_d_mul      |100.0  | interdependent with other parameters and ref_v.    |
+ |6  |  delta_d_mul      |10.0   | interdependent  with other parameters and ref_v.   |
 
 I took help from previous implementations as guideline.
 However, it looks like each implementation varied drastically in terms cost penalty multiplier
@@ -104,7 +104,7 @@ constraints. The loops repeates until the similator exits.
 The following lecture snapshot provides a good pictorial description of control loop.
 ![alt text][image2]
 
-## 5. Reflection.
+## 5. Reflection
 This exercise provided an appreciation for the complexity involved for a simple model,
 which does not even consider the dynamic forces, such as tire slip, air friction etc.
 There are two many levers to play with. In one prominent way this exercise does NOT
